@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CricketTales.com - Share Your Cricket Stories</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1565C0;
+            --accent-gold: #FFD600;
+            --white: #ffffff;
+            --slate-gray: #64748b;
+            --light-gray: #f8fafc;
+            --border-gray: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            line-height: 1.6;
+            color: #334155;
+            background: linear-gradient(135deg, var(--light-gray) 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(21, 101, 192, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 700;
+            font-size: 2rem;
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--slate-gray);
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #1976d2 100%);
+            color: var(--white);
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '🏏';
+            position: absolute;
+            font-size: 8rem;
+            opacity: 0.1;
+            top: 50%;
+            left: 20%;
+            transform: translateY(-50%);
+        }
+
+        .hero::after {
+            content: '🏆';
+            position: absolute;
+            font-size: 6rem;
+            opacity: 0.1;
+            top: 30%;
+            right: 15%;
+        }
+
+        .hero h1 {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 700;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-gold);
+            color: #1a1a1a;
+        }
+
+        .btn-primary:hover {
+            background: #ffc107;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 214, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-gray);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(21, 101, 192, 0.15);
+        }
+
+        .wicket-border {
+            border-left: 4px solid var(--accent-gold);
+            border-right: 4px solid var(--accent-gold);
+        }
+
+        /* Form Styles */
+        .form-section {
+            padding: 3rem 0;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Story Grid */
+        .error-banner {
+            background-color: #ffdddd;
+            color: #900;
+            padding: 0.75rem;
+            border: 1px solid #e99;
+            border-radius: 4px;
+            margin: 1rem 0;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .filter-bar {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn2{
+            display: block;
+            margin: 5px auto;
+            width: fit-content;
+            background: #ffc107;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: black;
+        }
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 3rem 0;
+        }
+
+        .story-card {
+            position: relative;
+        }
+
+        .story-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--slate-gray);
+        }
+
+        .story-title {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .story-excerpt {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        /* Voting Widget */
+        .vote-widget {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .vote-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .btn-vote {
+            background: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-vote:hover:not(:disabled) {
+            background: #1976d2;
+            transform: translateY(-1px);
+        }
+
+        .btn-vote:disabled {
+            background: var(--slate-gray);
+            cursor: not-allowed;
+        }
+
+        /* Boost Feature */
+        .boost-section {
+            border-top: 2px solid var(--accent-gold);
+            padding-top: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .boost-btn {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #ffc107 100%);
+            color: #1a1a1a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .boost-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 214, 0, 0.4);
+        }
+
+        .boosted-badge {
+            background: var(--accent-gold);
+            color: #1a1a1a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 2px solid var(--border-gray);
+            border-top: 2px solid var(--primary-blue);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Navigation Sections */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+           .header,
+           .footer {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+            
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .story-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer .subscribe-form {
+                width: 100%;
+                max-width: 320px;
+                margin: 1rem auto 0;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-blue);
+            color: var(--white);
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="#" class="logo">CricketTales</a>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showSection('home')" class="nav-link active">Home</a></li>
+                <li><a href="#" onclick="showSection('submit')" class="nav-link">Submit Story</a></li>
+                <li><a href="#" onclick="showSection('stories')" class="nav-link">Stories</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Home Section -->
+    <section id="home" class="section active">
+        <div class="hero">
+            <div class="container">
+                <h1>Share Your Cricket Tales</h1>
+                <p>A community-driven platform where fans share match stories, player legends, and personal cricket memories</p>
+                <a href="#" onclick="showSection('submit')" class="btn btn-primary">Share Your Story</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="story-grid" id="featured-stories">
+                <!-- Featured stories will be loaded here -->
+                <div class="card story-card wicket-border">
+                    <div class="story-meta">
+                        <span>By Rahul Kumar</span>
+                        <span>2024-05-15</span>
+                    </div>
+                    <h3 class="story-title">The Greatest Six I Ever Witnessed</h3>
+                    <p class="story-excerpt">It was the final over, 12 runs needed, and Dhoni was on strike. The stadium was electric, 50,000 people on their feet...</p>
+                    <div class="vote-widget">
+                        <div class="vote-count">
+                            <span>⭐</span>
+                            <span>247 votes</span>
+                        </div>
+                        <button class="btn-vote" onclick="voteForStory('story-1')">Vote for This Tale</button>
+                    </div>
+                    <div class="boost-section">
+                        <span class="boosted-badge">🚀 Boosted</span>
+                        <button class="boost-btn" onclick="boostStory('story-1')">Boost This Tale - $2</button>
+                    </div>
+                </div>
+
+                <div class="card story-card wicket-border">
+                    <div class="story-meta">
+                        <span>By Priya Sharma</span>
+                        <span>2024-05-12</span>
+                    </div>
+                    <h3 class="story-title">My First Cricket Match</h3>
+                    <p class="story-excerpt">I was seven years old when my father took me to my first cricket match. The roar of the crowd, the crack of the bat...</p>
+                    <div class="vote-widget">
+                        <div class="vote-count">
+                            <span>⭐</span>
+                            <span>189 votes</span>
+                        </div>
+                        <button class="btn-vote" onclick="voteForStory('story-2')">Vote for This Tale</button>
+                    </div>
+                    <div class="boost-section">
+                        <button class="boost-btn" onclick="boostStory('story-2')">Boost This Tale - $2</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Submit Story Section -->
+    <section id="submit" class="section">
+        <div class="form-section">
+            <div class="container">
+                <div class="form-container">
+                    <div class="card">
+                        <h2 style="font-family: 'Raleway', sans-serif; font-weight: 700; color: var(--primary-blue); margin-bottom: 2rem; text-align: center;">Share Your Cricket Tale</h2>
+                        
+                        <form id="story-form">
+                            <div class="form-group">
+                                <label for="author-name">Your Name</label>
+                                <input type="text" id="author-name" class="form-control" required placeholder="Enter your name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="author-email">Email Address</label>
+                                <input type="email" id="author-email" class="form-control" required placeholder="your.email@example.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="match-date">Match Date</label>
+                                <input type="date" id="match-date" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="story-text">Your Cricket Story</label>
+                                <textarea id="story-text" class="form-control" required placeholder="Share your unforgettable cricket moment, match experience, or player encounter..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                Submit Your Story <span id="submit-spinner" class="spinner" style="display: none;"></span>
+                                <span id="loading-indicator" style="display:none;">⏳ Submitting...</span>
+                            </button>
+                        </form>
+
+                        <div id="form-message"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stories Section -->
+    <section id="stories" class="section">
+        <div class="container">
+            <h2 style="font-family: 'Raleway', sans-serif; font-weight: 700; color: var(--primary-blue); text-align: center; margin: 2rem 0;">All Cricket Tales</h2>
+            <div class="filter-bar">
+                <label for="tag-select">Filter by tag:</label>
+                <select id="tag-select">
+                    <option value="All">All</option>
+                    <option value="Match">Match</option>
+                    <option value="Player">Player</option>
+                    <option value="Interview">Interview</option>
+                </select>
+            </div>
+
+            <!-- Error Banner -->
+            <div id="error-banner" class="error-banner" style="display:none;">
+            </div>
+            <div class="story-grid" id="all-stories">
+                <!-- Stories will be loaded dynamically -->              
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 CricketTales.com - Powered by Community Stories</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Stripe - Key loaded securely from backend
+        let stripe = null;
+        
+        // Load Stripe configuration securely
+        async function initializeStripe() {
+            try {
+                const response = await fetch('/api/config');
+                const config = await response.json();
+                stripe = Stripe(config.stripePublishableKey);
+            } catch (error) {
+                console.error('Failed to load Stripe configuration:', error);
+                // Fallback for demo purposes
+                stripe = Stripe('pk_test_demo_key_for_ui_only');
+            }
+        }
+        
+        // Initialize on page load
+        initializeStripe();
+
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+        }
+
+        // Story Submission (Module A)
+        document.getElementById('story-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const spinner = document.getElementById('submit-spinner');
+            const messageDiv = document.getElementById('form-message');
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            messageDiv.innerHTML = '';
+            
+            const formData = {
+                name: document.getElementById('author-name').value,
+                email: document.getElementById('author-email').value,
+                date: document.getElementById('match-date').value,
+                story: document.getElementById('story-text').value
+            };
+            
+            try {
+                // Simulate API call
+                const response = await fetch('/api/story-submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    messageDiv.innerHTML = '<div class="alert alert-success">🎉 Story submitted successfully! Thank you for sharing your cricket tale.</div>';
+                    document.getElementById('story-form').reset();
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (error) {
+                // Since we're in demo mode, simulate success after delay
+                setTimeout(() => {
+                    messageDiv.innerHTML = '<div class="alert alert-success">🎉 Story submitted successfully! Thank you for sharing your cricket tale.</div>';
+                    document.getElementById('story-form').reset();
+                }, 1000);
+            } finally {
+                submitBtn.disabled = false;
+                spinner.style.display = 'none';
+            }
+        });
+
+        // Community Voting (Module B)
+        async function voteForStory(storyId) {
+            const button = event.target;
+            const voteCount = button.parentElement.querySelector('.vote-count span:last-child');
+            const email = 'user@example.com'; // In real app, get from user session
+            
+            button.disabled = true;
+            button.innerHTML = 'Voting...';
+            
+            try {
+                // Simulate API call
+                const response = await fetch('/api/story-vote', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ storyId, email })
+                });
+                
+                if (response.ok) {
+                    // Simulate vote count update
+                    const currentCount = parseInt(voteCount.textContent.split(' ')[0]);
+                    voteCount.textContent = `${currentCount + 1} votes`;
+                    button.innerHTML = '✅ Voted';
+                    button.style.background = '#10b981';
+                } else {
+                    throw new Error('Vote failed');
+                }
+            } catch (error) {
+                // Demo mode - simulate success
+                setTimeout(() => {
+                    const currentCount = parseInt(voteCount.textContent.split(' ')[0]);
+                    voteCount.textContent = `${currentCount + 1} votes`;
+                    button.innerHTML = '✅ Voted';
+                    button.style.background = '#10b981';
+                }, 500);
+            }
+        }
+
+        // Paid Boost Feature (Module C)
+        async function boostStory(storyId) {
+            const button = event.target;
+            button.disabled = true;
+            button.innerHTML = 'Processing...';
+            
+            try {
+                // Create boost session
+                const response = await fetch('/api/create-boost-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        storyId: storyId,
+                        amount: 200 // $2.00 in cents
+                    })
+                });
+                
+                if (response.ok) {
+                    const session = await response.json();
+                    
+                    // Redirect to Stripe Checkout
+                    const result = await stripe.redirectToCheckout({
+                        sessionId: session.id
+                    });
+                    
+                    if (result.error) {
+                        throw new Error(result.error.message);
+                    }
+                } else {
+                    throw new Error('Failed to create boost session');
+                }
+            } catch (error) {
+                // Demo mode - simulate success
+                setTimeout(() => {
+                    button.innerHTML = '🚀 Boosted!';
+                    button.style.background = '#10b981';
+                    
+                    // Add boosted badge if not already present
+                    const boostSection = button.parentElement;
+                    if (!boostSection.querySelector('.boosted-badge')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'boosted-badge';
+                        badge.innerHTML = '🚀 Boosted';
+                        boostSection.insertBefore(badge, button);
+                    }
+                    
+                    // Show success message
+                    const successMsg = document.createElement('div');
+                    successMsg.className = 'alert alert-success';
+                    successMsg.innerHTML = '🎉 Story boosted successfully! It will now have enhanced visibility.';
+                    boostSection.appendChild(successMsg);
+                    
+                    setTimeout(() => successMsg.remove(), 5000);
+                }, 1000);
+            } finally {
+                setTimeout(() => {
+                    button.disabled = false;
+                }, 1000);
+            }
+        }
+
+        // Load more demo stories for the stories section
+        function loadAllStories() {
+            const storiesContainer = document.getElementById('all-stories');
+            const demoStories = [
+                {
+                    id: 'story-3',
+                    author: 'Amit Patel',
+                    date: '2024-05-10',
+                    title: 'The Catch That Changed Everything',
+                    excerpt: 'It was a routine match until that incredible boundary catch in the 18th over...',
+                    votes: 156
+                },
+                {
+                    id: 'story-4',
+                    author: 'Sneha Reddy',
+                    date: '2024-05-08',
+                    title: 'Meeting My Cricket Hero',
+                    excerpt: 'I never thought I would meet Virat Kohli, but destiny had other plans...',
+                    votes: 203
+                },
+                {
+                    id: 'story-5',
+                    author: 'Rajesh Singh',
+                    date: '2024-05-05',
+                    title: 'The Underdog Victory',
+                    excerpt: 'Our local team was 50 runs behind with 3 overs left. What happened next was magical...',
+                    votes: 127
+                }
+            ];
+            
+            storiesContainer.innerHTML = demoStories.map(story => `
+                <div class="card story-card wicket-border">
+                    <div class="story-meta">
+                        <span>By ${story.author}</span>
+                        <span>${story.date}</span>
+                    </div>
+                    <h3 class="story-title">${story.title}</h3>
+                    <p class="story-excerpt">${story.excerpt}</p>
+                    <a href="story-detail.html" class="btn2">More</a> 
+                    <div class="vote-widget">
+                        <div class="vote-count">
+                            <span>⭐</span>
+                            <span>${story.votes} votes</span>
+                        </div>
+                        <button class="btn-vote" onclick="voteForStory('${story.id}')">Vote for This Tale</button>
+                    </div>
+                    <div class="boost-section">
+                        <button class="boost-btn" onclick="boostStory('${story.id}')">Boost This Tale - $2</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllStories();
+        });
+    </script>
+</body>
+</html>

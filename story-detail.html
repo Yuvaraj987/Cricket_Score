@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Story Detail</title>
+    <style>
+        /* General page layout */
+body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    margin: 0;
+    background: #f9fafb;
+    color: #222;
+    line-height: 1.6;
+}
+
+/* Container */
+.story-detail-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Title */
+.story-detail-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: blue; /* dark green cricket vibe */
+}
+
+/* Author and date */
+.story-meta {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+/* Featured image */
+.story-detail-image {
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* Content */
+.story-detail-content {
+    font-size: 1.1rem;
+    white-space: pre-line;
+}
+
+/* Vote button */
+.vote-button {
+    background: darkblue;
+    color: white;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 0px;
+    transition: background 0.3s ease;
+    align-items: center;
+}
+
+.vote-button:hover {
+    background: blue;
+}
+
+.vote-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+.vote-button2 {
+    background: #ffc107;
+    color: black;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 0px;
+    transition: background 0.3s ease;
+    font-weight: 549;
+}
+
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .story-detail-container {
+        margin: 20px;
+        padding: 15px;
+    }
+    .story-detail-title {
+        font-size: 1.5rem;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+<div class="story-detail-container">
+    <h1 class="story-detail-title" id="story-title">The Catch That Changed Everything</h1>
+    <p class="story-meta" id="story-meta">It was a routine match until that incredible boundary catch in the 18th over the fielder, leaping high above the boundary rope, somehow managed to pluck the ball from thin air, his momentum carrying him just inside the line as he landed, a feat of athleticism that completely shifted the momentum of the game. The crowd erupted, sensing a turning point, and the bowler, previously looking dejected, roared with newfound energy. The match, which had been drifting towards a predictable conclusion, suddenly crackled with tension and excitement. </p>
+    <img src="" alt="Story Image" class="story-detail-image" id="story-image" style="display:none;">
+    <div class="story-detail-content" id="story-content">
+        <h5><span>⭐</span>156 Votes <button class="vote-button" onclick="voteForStory('story-1')">Vote for This Tale</button></h5>
+    </div>
+          
+    <hr>
+    <button class="vote-button2">Boost This Tale - $2</button>
+</div>
+
+<script src="/story-detail.js"></script>
+</body>
+</html>
