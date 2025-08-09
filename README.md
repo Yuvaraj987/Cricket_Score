@@ -38,7 +38,7 @@ CricketTales.com is a community-driven platform where cricket fans share match s
 - Accessibility-focused development
 
 ## 📱 Live Demo
-https://crickettales.netlify.app/
+infocric.netlify.app
 
 ## 🛠️ Local Development
 ```bash
