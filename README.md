@@ -1,4 +1,4 @@
-# CricketTales.com - Community Cricket Stories Platform
+# Cricket Stories
 
 This is a community-driven platform where cricket fans share match stories, player legends, and personal cricket memories.
 
@@ -22,5 +22,15 @@ This is a community-driven platform where cricket fans share match stories, play
 - Success/failure state handling
 - Enhanced story visibility for boosted content
 
-## Live Demo
+## Site
 https://infocric.netlify.app
+
+## License
+
+This project is licensed under the MIT License.
+
+## Author
+
+ Developed by [Yuvaraj987](https://github.com/Yuvaraj987)
+
+ ---
