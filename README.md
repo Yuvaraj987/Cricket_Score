@@ -5,7 +5,7 @@ This is a community-driven platform where cricket fans share match stories, play
 ## Features
 
 ### Module A: Story Submission Form
-- Complete form with validation
+- 📊 Complete form with validation
 - API endpoint for story submission
 - Success/error state handling
 - Responsive design
