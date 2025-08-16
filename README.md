@@ -6,21 +6,20 @@ This is a community-driven platform where cricket fans share match stories, play
 
 ### Module A: Story Submission Form
 - 📊 Complete form with validation
-- API endpoint for story submission
-- Success/error state handling
-- Responsive design
+- 📝 API endpoint for story submission
+- 🏆 Success/error state handling
+- 🏷️ Responsive design
 
 ### Module B: Community Voting Widget
 - 📱 Interactive voting system
-- Real-time vote count updates
-- Prevention of duplicate votes
+- 👥 Real-time vote count updates
+- 🛡️ Prevention of duplicate votes
 - ✨ Engaging UI animations
 
 ### Module C: Paid Boost Feature
-- Stripe integration for $2 story boosts
-- Secure payment processing
-- Success/failure state handling
-- Enhanced story visibility for boosted content
+- 🕒 Stripe integration for $2 story boosts
+- 🌐 Secure payment processing
+- 🚀 Enhanced story visibility for boosted content
 
 ## Site
 https://infocric.netlify.app
